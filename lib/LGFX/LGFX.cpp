@@ -50,9 +50,7 @@ class LGFX : public lgfx::LGFX_Device
         cfg.dummy_read_pixel = 8;   // Virtual number of positions read before reading image
         cfg.dummy_read_bits = 1;    // The number of imaginary words other than the image element
         cfg.readable = false;       // As long as the number of acquisitions is as high as possible, the setting is true
-
-        // cfg.invert = true;          // As a result, the brightness and darkness of the face plate is reversed, and the setting is true
-
+        cfg.invert = true;          // As a result, the brightness and darkness of the face plate is reversed, and the setting is true
         cfg.rgb_order = RGB_ORDER;  // As a result, the red color and the blue color are replaced on the face plate, and the setting is true
         cfg.dlen_16bit = false;     // From 16th position to 16th position, the length of the number of transfers is set to true
         cfg.bus_shared = false;     // How to use drawJpgFile (e.g. summary control)
@@ -67,8 +65,7 @@ class LGFX : public lgfx::LGFX_Device
         cfg.pin_bl = BL;     // pin number to which the backlight is connected
         cfg.freq = 44100;    // backlight PWM frequency
         cfg.pwm_channel = 1; // PWM channel number to use
-
-        // cfg.invert = true;
+        cfg.invert = false;  // true to invert backlight brightness
 
         _light_instance.config(cfg);
         _panel_instance.setLight(&_light_instance); // Sets the backlight to the panel.

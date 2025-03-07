@@ -1,18 +1,30 @@
 #include <Arduino.h>
 #include <AppHelper.cpp>
 
-void drawBluetooth(uint8_t loadingWheelThickness);
+#define BACKGROUND_COLOR TFT_BLACK
+#define WRITE_COLOR TFT_WHITE
+
+void clearDisplay(void);
+void drawBluetooth();
 void drawBluetoothLoading(uint8_t loadingWheelThickness);
 
 void setup() {
   helper_setup();
+
+  helper_loop();
+  clearDisplay();
+  drawBluetooth();
 }
 
 void loop() {
   helper_loop();
-  _lcd.setColor(TFT_BLACK);
 
-  drawBluetooth(3);
+  drawBluetoothLoading(3);
+}
+
+void clearDisplay() {
+  _lcd.fillScreen(BACKGROUND_COLOR);
+  _lcd.setColor(WRITE_COLOR);
 }
 
 uint8_t bluetoothMargin = 80;
@@ -26,13 +38,12 @@ boolean clearColor = false;
  * 
  * @param loadingWheelThickness the thickness of the loading wheel
  */
-void drawBluetooth(uint8_t loadingWheelThickness) {
-  _lcd.drawWideLine(screenHalfWidth, bluetoothMargin, screenHalfWidth, HEIGHT-bluetoothMargin, 3, TFT_BLACK);
-  _lcd.drawWideLine(screenHalfWidth-quarterBluetoothHeight, bluetoothMargin+quarterBluetoothHeight, screenHalfWidth+quarterBluetoothHeight, HEIGHT-bluetoothMargin-quarterBluetoothHeight, 3, TFT_BLACK);
-  _lcd.drawWideLine(screenHalfWidth-quarterBluetoothHeight, HEIGHT-bluetoothMargin-quarterBluetoothHeight, screenHalfWidth+quarterBluetoothHeight, bluetoothMargin+quarterBluetoothHeight, 3, TFT_BLACK);
-  _lcd.drawWideLine(screenHalfWidth, bluetoothMargin, screenHalfWidth+quarterBluetoothHeight, bluetoothMargin+quarterBluetoothHeight, 3, TFT_BLACK);
-  _lcd.drawWideLine(screenHalfWidth, HEIGHT-bluetoothMargin, screenHalfWidth+quarterBluetoothHeight, HEIGHT-bluetoothMargin-quarterBluetoothHeight, 3, TFT_BLACK);
-  drawBluetoothLoading(loadingWheelThickness);
+void drawBluetooth() {
+  _lcd.drawWideLine(screenHalfWidth, bluetoothMargin, screenHalfWidth, HEIGHT-bluetoothMargin, 3, WRITE_COLOR);
+  _lcd.drawWideLine(screenHalfWidth-quarterBluetoothHeight, bluetoothMargin+quarterBluetoothHeight, screenHalfWidth+quarterBluetoothHeight, HEIGHT-bluetoothMargin-quarterBluetoothHeight, 3, WRITE_COLOR);
+  _lcd.drawWideLine(screenHalfWidth-quarterBluetoothHeight, HEIGHT-bluetoothMargin-quarterBluetoothHeight, screenHalfWidth+quarterBluetoothHeight, bluetoothMargin+quarterBluetoothHeight, 3, WRITE_COLOR);
+  _lcd.drawWideLine(screenHalfWidth, bluetoothMargin, screenHalfWidth+quarterBluetoothHeight, bluetoothMargin+quarterBluetoothHeight, 3, WRITE_COLOR);
+  _lcd.drawWideLine(screenHalfWidth, HEIGHT-bluetoothMargin, screenHalfWidth+quarterBluetoothHeight, HEIGHT-bluetoothMargin-quarterBluetoothHeight, 3, WRITE_COLOR);
 }
 
 /**
@@ -40,9 +51,9 @@ void drawBluetooth(uint8_t loadingWheelThickness) {
  */
 void drawBluetoothLoading(uint8_t loadingWheelThickness) {
   if (clearColor) {
-    _lcd.setColor(TFT_WHITE);
+    _lcd.setColor(BACKGROUND_COLOR);
   } else {
-    _lcd.setColor(TFT_BLACK);
+    _lcd.setColor(WRITE_COLOR);
   }
 
   for (uint8_t i=0; i<loadingWheelThickness; i++) {
