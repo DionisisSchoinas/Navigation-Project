@@ -1,5 +1,33 @@
 #include <Arduino.h>
 #include <AppHelper.cpp>
+#include <BLEDevice.h>
+#include <BLEServer.h>
+#include <BLEUtils.h>
+#include <BLE2902.h>
+
+BLEServer *pServer = NULL;
+BLECharacteristic *pCharacteristic = NULL;
+
+bool deviceConnected = false;
+bool oldDeviceConnected = false;
+uint32_t value = 0;
+
+// See the following for generating UUIDs:
+// https://www.uuidgenerator.net/
+
+#define SERVICE_UUID        "52786979-1178-4265-8158-b5b72da65854"
+#define CHARACTERISTIC_UUID "66f8f28a-974e-48ab-b6ee-ad590651899d"
+
+class MyServerCallbacks : public BLEServerCallbacks {
+  void onConnect(BLEServer *pServer) {
+    deviceConnected = true;
+  };
+
+  void onDisconnect(BLEServer *pServer) {
+    deviceConnected = false;
+  }
+};
+
 
 #define BACKGROUND_COLOR TFT_BLACK
 #define WRITE_COLOR TFT_WHITE
@@ -11,6 +39,35 @@ void drawBluetoothLoading(uint8_t loadingWheelThickness);
 void setup() {
   helper_setup();
 
+  // Create the BLE Device
+  BLEDevice::init("Navigation ESP32-S3");
+
+  // Create the BLE Server
+  pServer = BLEDevice::createServer();
+  pServer->setCallbacks(new MyServerCallbacks());
+
+  // Create the BLE Service
+  BLEService *pService = pServer->createService(SERVICE_UUID);
+
+  // Create a BLE Characteristic
+  pCharacteristic = pService->createCharacteristic(
+    CHARACTERISTIC_UUID,
+    BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_INDICATE
+  );
+
+  // Creates BLE Descriptor 0x2902: Client Characteristic Configuration Descriptor (CCCD)
+  pCharacteristic->addDescriptor(new BLE2902());
+
+  // Start the service
+  pService->start();
+
+  // Start advertising
+  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+  pAdvertising->addServiceUUID(SERVICE_UUID);
+  pAdvertising->setScanResponse(false);
+  pAdvertising->setMinPreferred(0x0);  // set value to 0x00 to not advertise this parameter
+  BLEDevice::startAdvertising();
+
   helper_loop();
   clearDisplay();
   drawBluetooth();
@@ -19,7 +76,38 @@ void setup() {
 void loop() {
   helper_loop();
 
-  drawBluetoothLoading(3);
+  // notify changed value
+  if (deviceConnected) {
+    if (!oldDeviceConnected) {
+      /**
+       * CONNECTING
+       */
+      oldDeviceConnected = true;
+
+      clearDisplay();
+      _lcd.setTextSize(15);
+      _lcd.drawCenterString("Hi!", screenHalfWidth, screenHalfHeight);
+    }
+
+    pCharacteristic->setValue((uint8_t *)&value, 4);
+    pCharacteristic->notify();
+    value++;
+    delay(500);
+  } else if (oldDeviceConnected) {
+    /**
+     * DISCONNECTED
+     */
+    delay(500);                   // give the bluetooth stack the chance to get things ready
+    pServer->startAdvertising();  // restart advertising
+    oldDeviceConnected = false;
+    
+    clearDisplay();
+    drawBluetooth();
+  }
+
+  if (!oldDeviceConnected) {
+    drawBluetoothLoading(3);
+  }
 }
 
 void clearDisplay() {
