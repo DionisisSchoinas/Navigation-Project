@@ -1,5 +1,8 @@
 #define LGFX_USE_V1
 
+#ifndef APP_HELPER
+#define APP_HELPER
+
 #include "Arduino.h"
 
 #include "LGFX.cpp"
@@ -284,3 +287,5 @@ void helper_loop()
     lv_timer_handler(); // Update the UI
     delay(5);
 }
+
+#endif

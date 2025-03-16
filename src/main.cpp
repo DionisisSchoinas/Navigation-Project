@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include <AppHelper.cpp>
+#include <DirectionHelper.cpp>
+
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
@@ -43,7 +45,7 @@ class CharacteristicCallBack : public BLECharacteristicCallbacks
   void onWrite(BLECharacteristic *characteristic_) override
   {
     clearDisplay();
-    _lcd.drawCenterString(characteristic_->getValue().c_str(), screenHalfWidth, screenHalfHeight);
+    draw(characteristic_->getValue().c_str());
   }
 };
 
@@ -95,7 +97,7 @@ void loop() {
       oldDeviceConnected = true;
 
       clearDisplay();
-      _lcd.setTextSize(10);
+      _lcd.setTextSize(5);
       _lcd.drawCenterString("Hi!", screenHalfWidth, screenHalfHeight);
     }
 
