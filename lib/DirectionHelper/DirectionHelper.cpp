@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <AppHelper.cpp>
 
-#define DRAW_DEBUG 1
+#define DRAW_DEBUG 0
 
 enum Maneuver {
     UNKNOWN = -1,
@@ -56,23 +56,39 @@ void draw(const char *value) {
             _lcd.fillRect(topleft_x + 8*u - 107, topleft_y + 5*u, u, 2.5*u, WRITE_COLOR);
             break;
         case RAMP_LEFT:
-            _lcd.drawCenterString("RAMP_LEFT", screenHalfWidth, screenHalfHeight);
+            _lcd.fillTriangle(topleft_x + 4*u, topleft_y + u, topleft_x + 2*u, topleft_y + 3*u, topleft_x + 6*u, topleft_y + 3*u, WRITE_COLOR);
+            _lcd.fillRect(topleft_x + 3.5*u, topleft_y + 2*u, u, 5*u, WRITE_COLOR);
+            _lcd.fillTriangle(topleft_x + 80, topleft_y + 73, topleft_x + 41, topleft_y + 125, topleft_x + 80, topleft_y + 98, WRITE_COLOR);
+            _lcd.fillTriangle(topleft_x + 52, topleft_y + 136, topleft_x + 41, topleft_y + 125, topleft_x + 80, topleft_y + 98, WRITE_COLOR);
             break;
         case RAMP_RIGHT:
-            _lcd.drawCenterString("RAMP_RIGHT", screenHalfWidth, screenHalfHeight);
+            _lcd.fillTriangle(topleft_x + 4*u, topleft_y + u, topleft_x + 2*u, topleft_y + 3*u, topleft_x + 6*u, topleft_y + 3*u, WRITE_COLOR);
+            _lcd.fillRect(topleft_x + 3.5*u, topleft_y + 2*u, u, 5*u, WRITE_COLOR);
+            _lcd.fillTriangle(topleft_x + 95, topleft_y + 72, topleft_x + 95, topleft_y + 97, topleft_x + 135, topleft_y + 125, WRITE_COLOR);
+            _lcd.fillTriangle(topleft_x + 124, topleft_y + 136, topleft_x + 95, topleft_y + 97, topleft_x + 135, topleft_y + 125, WRITE_COLOR);
             break;
         case MERGE:
-            _lcd.drawCenterString("MERGE", screenHalfWidth, screenHalfHeight);
+            _lcd.fillTriangle(topleft_x + 4*u, topleft_y + u, topleft_x + 2*u, topleft_y + 3*u, topleft_x + 6*u, topleft_y + 3*u, WRITE_COLOR);
+            _lcd.fillRect(topleft_x + 3.5*u, topleft_y + 2*u, u, 5*u, WRITE_COLOR);
+            _lcd.fillTriangle(topleft_x + 80, topleft_y + 73, topleft_x + 41, topleft_y + 125, topleft_x + 80, topleft_y + 98, WRITE_COLOR);
+            _lcd.fillTriangle(topleft_x + 52, topleft_y + 136, topleft_x + 41, topleft_y + 125, topleft_x + 80, topleft_y + 98, WRITE_COLOR);
+            _lcd.fillTriangle(topleft_x + 95, topleft_y + 72, topleft_x + 95, topleft_y + 97, topleft_x + 135, topleft_y + 125, WRITE_COLOR);
+            _lcd.fillTriangle(topleft_x + 124, topleft_y + 136, topleft_x + 95, topleft_y + 97, topleft_x + 135, topleft_y + 125, WRITE_COLOR);
             break;
         case STRAIGHT:
-            _lcd.drawCenterString("RAMP_RIGHT", screenHalfWidth, screenHalfHeight);
+            _lcd.fillTriangle(topleft_x + 4*u, topleft_y + u, topleft_x + 2*u, topleft_y + 3*u, topleft_x + 6*u, topleft_y + 3*u, WRITE_COLOR);
+            _lcd.fillRect(topleft_x + 3.5*u, topleft_y + 2*u, u, 5*u, WRITE_COLOR);
             break;
         case DEPART:
-            _lcd.drawCenterString("DEPART", screenHalfWidth, screenHalfHeight);
+            _lcd.fillTriangle(topleft_x + 7*u, topleft_y + 1.5*u, topleft_x + 5*u, topleft_y + 1.5*u, topleft_x + 7*u, topleft_y + 3.5*u, WRITE_COLOR);
+            _lcd.fillRect(topleft_x + 3*u, topleft_y + 6*u, 2*u, u, WRITE_COLOR);
+            _lcd.fillArc(topleft_x, topleft_y + 6*u, 3.7*u, 4.3*u, 285, 360, WRITE_COLOR);
+            _lcd.fillArc(topleft_x + 8*u, topleft_y + 6*u, 3.7*u, 4.3*u, 180, 250, WRITE_COLOR);
             break;
         case UNKNOWN:
+        case NONE:
         default:
-            _lcd.drawCenterString("X", screenHalfWidth, screenHalfHeight);
+            _lcd.drawCenterString("X", topleft_x + 4*u, topleft_y + 4*u);
             break;
     }
 }

@@ -82,7 +82,7 @@ void setup() {
   _lcd.setTextSize(7);
 
   #if DRAW_DEBUG
-    draw("3");
+    draw("8");
     return;
   #endif
   
