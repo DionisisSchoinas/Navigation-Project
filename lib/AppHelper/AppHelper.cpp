@@ -17,6 +17,9 @@
 #define F_NAME "FATFS"
 #define buf_size 10
 
+#define BACKGROUND_COLOR TFT_BLACK
+#define WRITE_COLOR TFT_WHITE
+
 LGFX _lcd;
 
 Preferences prefs;

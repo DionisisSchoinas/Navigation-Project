@@ -7,9 +7,6 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
-#define BACKGROUND_COLOR TFT_BLACK
-#define WRITE_COLOR TFT_WHITE
-
 void connectedLoop(void);
 void clearDisplay(void);
 void drawBluetooth(void);
@@ -82,11 +79,22 @@ void setup() {
 
   helper_loop();
   clearDisplay();
+  _lcd.setTextSize(7);
+
+  #if DRAW_DEBUG
+    draw("3");
+    return;
+  #endif
+  
   drawBluetooth();
 }
 
 void loop() {
   helper_loop();
+
+  #if DRAW_DEBUG
+    return;
+  #endif
 
   // notify changed value
   if (deviceConnected) {
@@ -97,7 +105,6 @@ void loop() {
       oldDeviceConnected = true;
 
       clearDisplay();
-      _lcd.setTextSize(5);
       _lcd.drawCenterString("Hi!", screenHalfWidth, screenHalfHeight);
     }
 
@@ -165,11 +172,9 @@ void drawBluetoothLoading(uint8_t loadingWheelThickness) {
     _lcd.setColor(WRITE_COLOR);
   }
 
-  for (uint8_t i=0; i<loadingWheelThickness; i++) {
-    _lcd.drawArc(screenHalfWidth, screenHalfHeight, halfBluetoothHeight+19+i, halfBluetoothHeight+19+i, 0, loadingAngle);
-  }
-  
-  loadingAngle += 4;
+  _lcd.fillArc(screenHalfWidth, screenHalfHeight, halfBluetoothHeight+19, halfBluetoothHeight+19+loadingWheelThickness, 0, loadingAngle);
+  loadingAngle += 2;
+
   if (loadingAngle > 360) {
     clearColor = !clearColor;
     loadingAngle = 0;
